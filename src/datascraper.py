@@ -15,12 +15,14 @@ def read_from_url(url):
     rankings = soup.find_all(target="Rankings")
     # iterate through the stats
     for stat in rankings:
+        # find the rank needed in the corresponding tag
+        rank = stat.findNext("td", align="right")
         # find the value needed in the corresponding tag
-        value = stat.findNext("td", align="right")
+        value = rank.findNext("td", align="right")
         # output the stat name
         print(stat.text)
         # output the stat value
-        print(value.text)
+        print(value.text.strip())
 
 
 def write_to_csv():
