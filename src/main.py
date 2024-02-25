@@ -1,16 +1,7 @@
-# This is a sample Python script.
+import datascraper
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+# TODO add dictionary of teams so that we can iterate through all of them in one go
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    datascraper.read_from_url("https://stats.ncaa.org/teams/557270")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
