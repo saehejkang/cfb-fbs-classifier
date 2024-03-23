@@ -2,6 +2,7 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 def confusion(test, pred):
     """
     This function prints a confusion matrix using the actual(test) labels vs the predicted labels.
