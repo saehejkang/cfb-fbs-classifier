@@ -9,9 +9,9 @@ if __name__ == '__main__':
     data = data_cleaner.clean_data()
 
     # isolate the features into their own Dataframe
-    x = data.iloc[:, 3:]
-    y = data['Final_Standing']
+    features = data.iloc[:, 3:]
+    labels = data['Final_Standing']
 
     #classify
-    classify.knn(x, y)
+    classify.knn(x=features, y=labels, k=3)
 
