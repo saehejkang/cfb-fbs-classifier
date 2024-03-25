@@ -1,4 +1,8 @@
-import data_cleaner, classify
+from matplotlib import pyplot as plt
+
+import data_cleaner, classify, graphs
+
+accuracy_scores = []
 
 if __name__ == '__main__':
     # run the datascraper to collect data
@@ -13,3 +17,12 @@ if __name__ == '__main__':
 
     # classify
     classify.knn(x=features, y=labels, k=3)
+    classify.add_scores(accuracy_scores)
+    classify.knn(x=features, y=labels, k=5)
+    classify.add_scores(accuracy_scores)
+    classify.knn(x=features, y=labels, k=7)
+    classify.add_scores(accuracy_scores)
+
+    labels, values = zip(*accuracy_scores)
+
+    graphs.accuracy_comparison(labels, values)

@@ -1,3 +1,5 @@
+from typing import List
+
 from pandas import DataFrame
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
@@ -8,10 +10,14 @@ from sklearn.svm import SVC
 
 import graphs
 
+scores = []
 
 def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features=5) -> DataFrame:
     """
     This function performs recursive feature elimination using the estimator passed in
+    :param num_features: number of features that we want to isolate
+    :param x: features
+    :param y: labels
     :param estimator_type: estimator to use with RFE
     :return: DataFrame representing the data from only the columns found by the RFE
     """
@@ -39,14 +45,24 @@ def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features
     return x[x.columns[rfe.support_]].copy()
 
 
-def knn(x, y, k) -> None:
-    svc_features = get_rfe_features(x, y, estimator_type="support_vector_machine", num_features=5)
-    logistic_regression_features = get_rfe_features(x, y, estimator_type="logistic_regression", num_features=5)
+def add_scores(lst: List):
+    for entry in scores:
+        lst.append(entry)
 
-    for feature_selection in [svc_features, logistic_regression_features]:
-        print(f"Performing kNN classification using {feature_selection.columns.to_numpy()}")
+def knn(x, y, k) -> None:
+    scores.clear()
+    feature_selection_method_list = []
+    svc_features = get_rfe_features(x, y, estimator_type="support_vector_machine", num_features=5)
+    feature_selection_method_list.append("RFE-Support_Vector_Machine")
+    logistic_regression_features = get_rfe_features(x, y, estimator_type="logistic_regression", num_features=5)
+    feature_selection_method_list.append("RFE-Logistic_Regression")
+
+    for features, feature_selection in zip([svc_features, logistic_regression_features], feature_selection_method_list):
+        with open(f"../data/logs/{feature_selection}_{k}.log", "w") as f:
+            f.write(f"Top 5 features: {features.columns.to_numpy()}\n\n")
+
         # Split the data into training and testing sets
-        x_train, x_test, y_train, y_test = train_test_split(feature_selection, y, test_size=0.2, random_state=42)
+        x_train, x_test, y_train, y_test = train_test_split(features, y, test_size=0.2, random_state=42)
 
         # Initialize and train the kNN classifier
         knn_classifier = KNeighborsClassifier(n_neighbors=k)
@@ -54,9 +70,15 @@ def knn(x, y, k) -> None:
 
         # Evaluate the model
         accuracy = knn_classifier.score(x_test, y_test)
-        print(f'Accuracy: {accuracy}')
+
+        #write accuracy to log
+        with open(f"../data/logs/{feature_selection}_{k}.log", "a") as f:
+            f.write(f"Accuracy: {round(accuracy, 4)}\n\n")
+
+        #add accuracy to dict
+        scores.append((f"{feature_selection}-{k}", round(accuracy, 4)))
 
         # Assuming knn_classifier is your trained kNN classifier
         y_pred = knn_classifier.predict(x_test)
 
-        graphs.confusion(y_test, y_pred)
+        graphs.confusion(y_test, y_pred, feature_selection, k)
