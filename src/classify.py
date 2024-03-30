@@ -22,6 +22,7 @@ def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features
     :param estimator_type: estimator to use with RFE
     :return: DataFrame representing the data from only the columns found by the RFE
     """
+    rfe = None
     if estimator_type == "support_vector_machine":
         # Initialize Support Vector Machine estimator
         clf = SVC(kernel='linear')
@@ -41,16 +42,17 @@ def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features
         rfe = RFE(estimator=clf, n_features_to_select=num_features)
         rfe.fit_transform(x_scaled, y)
     elif estimator_type == "decision_tree_classifier":
-        #initialize the Decision Tree Classifier
+        # initialize the Decision Tree Classifier
         clf = DecisionTreeClassifier()
 
-        #apply the recursive feature elimination
+        # apply the recursive feature elimination
         rfe = RFE(estimator=clf, n_features_to_select=num_features)
-        rfe.fit(x,y)
+        rfe.fit(x, y)
 
     # print(x.columns[rfe.support_])
     # Create a new DataFrame with only the selected features
-    return x[x.columns[rfe.support_]].copy()
+    if rfe is not None:
+        return x[x.columns[rfe.support_]].copy()
 
 
 def add_scores(lst: List):
@@ -81,11 +83,11 @@ def knn(x, y, k) -> None:
         # Evaluate the model
         accuracy = knn_classifier.score(x_test, y_test)
 
-        #write accuracy to log
+        # write accuracy to log
         with open(f"../data/logs/{feature_selection}_{k}.log", "a") as f:
             f.write(f"Accuracy: {round(accuracy, 4)}\n\n")
 
-        #add accuracy to dict
+        # add accuracy to dict
         scores.append((f"{feature_selection}-{k}", round(accuracy, 4)))
 
         # Assuming knn_classifier is your trained kNN classifier
