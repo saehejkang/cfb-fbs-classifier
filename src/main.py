@@ -1,5 +1,3 @@
-from matplotlib import pyplot as plt
-
 import data_cleaner, classify, graphs
 
 accuracy_scores = []

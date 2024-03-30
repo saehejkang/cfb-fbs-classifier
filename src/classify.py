@@ -14,6 +14,7 @@ import graphs
 scores = []
 
 def user_chosen_features(x, choice) -> DataFrame:
+    features = None
     if choice == "saehej":
         pass
     elif choice == "tyler":
@@ -23,7 +24,8 @@ def user_chosen_features(x, choice) -> DataFrame:
     elif choice == "defense":
         features = ['Total Defense', 'Rushing Defense', 'Passing Yards Allowed', 'Team Passing Efficiency Defense', 'Scoring Defense']
 
-    return x[features].copy()
+    if features is not None:
+        return x[features].copy()
 
 
 def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features=5) -> DataFrame:
@@ -75,6 +77,8 @@ def add_scores(lst: List):
 def knn(x, y, k) -> None:
     scores.clear()
     feature_selection_method_list = []
+
+    # rfe defined features
     svc_features = get_rfe_features(x, y, estimator_type="support_vector_machine", num_features=5)
     feature_selection_method_list.append("RFE-Support_Vector_Machine")
     logistic_regression_features = get_rfe_features(x, y, estimator_type="logistic_regression", num_features=5)
@@ -113,5 +117,7 @@ def knn(x, y, k) -> None:
 
         # Assuming knn_classifier is your trained kNN classifier
         y_pred = knn_classifier.predict(x_test)
+
+        # print(y_pred == y_test)
 
         graphs.confusion(y_test, y_pred, feature_selection, k)

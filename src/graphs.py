@@ -22,7 +22,9 @@ def confusion(test, pred, feature_selection, k):
     """
     This function prints a confusion matrix using the actual(test) labels vs the predicted labels.
     The confusion matrix is a heatmap where the darker the blue, the more correct predictions were made.
-    Whereas, the lighter the color, the less correst predictions were made.
+    Whereas, the lighter the color, the less correct predictions were made.
+    :param k: value of k used in the kNN algo
+    :param feature_selection: type of feature selection we used
     :param test: test labels (actual)
     :param pred: predicted labels
     :return: None
@@ -36,6 +38,5 @@ def confusion(test, pred, feature_selection, k):
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
     plt.title('Confusion Matrix')
-    #plt.show()
     plt.savefig(f"../data/plots/confusion_matrix_{feature_selection}_{k}.png")
     plt.close()
