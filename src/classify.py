@@ -13,6 +13,19 @@ import graphs
 
 scores = []
 
+def user_chosen_features(x, choice) -> DataFrame:
+    if choice == "saehej":
+        pass
+    elif choice == "tyler":
+        features = ['Total Offense', 'Scoring Offense', 'Total Defense', 'Scoring Defense', 'Turnover Margin']
+    elif choice == "offense":
+        features = ['Total Offense', 'Rushing Offense', 'Passing Offense', 'Team Passing Efficiency', 'Scoring Offense']
+    elif choice == "defense":
+        features = ['Total Defense', 'Rushing Defense', 'Passing Yards Allowed', 'Team Passing Efficiency Defense', 'Scoring Defense']
+
+    return x[features].copy()
+
+
 def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features=5) -> DataFrame:
     """
     This function performs recursive feature elimination using the estimator passed in
@@ -69,7 +82,15 @@ def knn(x, y, k) -> None:
     decision_tree_features = get_rfe_features(x, y, estimator_type="decision_tree_classifier", num_features=5)
     feature_selection_method_list.append("RFE-Decision_Tree_Classifier")
 
-    for features, feature_selection in zip([svc_features, logistic_regression_features, decision_tree_features], feature_selection_method_list):
+    # user defined features
+    tyler_features = user_chosen_features(x, "tyler")
+    feature_selection_method_list.append("User_Defined_Tyler")
+    offense_features = user_chosen_features(x, "offense")
+    feature_selection_method_list.append('User_Defined_Offense')
+    defense_features = user_chosen_features(x, "defense")
+    feature_selection_method_list.append('User_Defined_Defense')
+
+    for features, feature_selection in zip([svc_features, logistic_regression_features, decision_tree_features, tyler_features, offense_features, defense_features], feature_selection_method_list):
         with open(f"../data/logs/{feature_selection}_{k}.log", "w") as f:
             f.write(f"Top 5 features: {features.columns.to_numpy()}\n\n")
 
