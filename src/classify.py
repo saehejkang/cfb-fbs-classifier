@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 import graphs
 
@@ -39,6 +40,13 @@ def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features
         # apply recursive feature elimination
         rfe = RFE(estimator=clf, n_features_to_select=num_features)
         rfe.fit_transform(x_scaled, y)
+    elif estimator_type == "decision_tree_classifier":
+        #initialize the Decision Tree Classifier
+        clf = DecisionTreeClassifier()
+
+        #apply the recursive feature elimination
+        rfe = RFE(estimator=clf, n_features_to_select=num_features)
+        rfe.fit(x,y)
 
     # print(x.columns[rfe.support_])
     # Create a new DataFrame with only the selected features
@@ -56,8 +64,10 @@ def knn(x, y, k) -> None:
     feature_selection_method_list.append("RFE-Support_Vector_Machine")
     logistic_regression_features = get_rfe_features(x, y, estimator_type="logistic_regression", num_features=5)
     feature_selection_method_list.append("RFE-Logistic_Regression")
+    decision_tree_features = get_rfe_features(x, y, estimator_type="decision_tree_classifier", num_features=5)
+    feature_selection_method_list.append("RFE-Decision_Tree_Classifier")
 
-    for features, feature_selection in zip([svc_features, logistic_regression_features], feature_selection_method_list):
+    for features, feature_selection in zip([svc_features, logistic_regression_features, decision_tree_features], feature_selection_method_list):
         with open(f"../data/logs/{feature_selection}_{k}.log", "w") as f:
             f.write(f"Top 5 features: {features.columns.to_numpy()}\n\n")
 
