@@ -2,6 +2,29 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+def misclassification_count(m: list):
+    labels = [item[0] for item in m]
+    values = [item[1] for item in m]
+    clfs = [item[2] for item in m]
+
+    bars = plt.bar(labels, values)
+    for bar, clf in zip(bars, clfs):
+        if clf == 0:
+            bar.set_color('red')
+        elif clf == 1:
+            bar.set_color('yellow')
+        elif clf == 2:
+            bar.set_color('green')
+
+    plt.legend(bars[::2], ['Playoff Team', 'Bowl-eligible', 'Not Bowl-eligible'])
+    plt.xlabel('Teams')
+    plt.ylabel('Number of Misclassifications')
+    plt.title('Number of Misclassifications by Team (From Test Set)')
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.savefig(f"../data/plots/misclassifications_count.png")
+    plt.close()
+
 def accuracy_comparison(labels, values):
     """
     This graphs a comparison graph of different kNN runs by comparing accuracy scores

@@ -118,6 +118,6 @@ def knn(x, y, k) -> None:
         # Assuming knn_classifier is your trained kNN classifier
         y_pred = knn_classifier.predict(x_test)
 
-        # print(y_pred == y_test)
+        yield y_pred == y_test
 
         graphs.confusion(y_test, y_pred, feature_selection, k)
