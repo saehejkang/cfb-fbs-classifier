@@ -134,23 +134,7 @@ def knn(x, y, k) -> None:
 
         # create scatter graph (only need 1 set, so do whenever k=3)
         if k == 3:
-            graphs.knn_scatter(x_train_pca, x_test_pca, y_train, y_test, feature_selection)
-
-        # # Plotting the training data after PCA
-        # plt.figure(figsize=(8, 6))
-        # plt.scatter(x_train_pca[:, 0], x_train_pca[:, 1], c=y_train, cmap='viridis', edgecolor='k', s=50)
-        # plt.xlabel('Principal Component 1')
-        # plt.ylabel('Principal Component 2')
-        # plt.title('2D Plot of Training Data (After PCA)')
-        #
-        # h = 0.02  # step size in the mesh
-        # x_min, x_max = x_train_pca[:, 0].min() - 1, x_train_pca[:, 0].max() + 1
-        # y_min, y_max = x_train_pca[:, 1].min() - 1, x_train_pca[:, 1].max() + 1
-        # xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
-        # Z = knn_classifier.predict(np.c_[xx.ravel(), yy.ravel()])
-        # Z = Z.reshape(xx.shape)
-        # plt.contourf(xx, yy, Z, cmap='viridis', alpha=0.5)
-        # plt.show()
+            graphs.knn_scatter(x_train_pca, x_test_pca, y_train, y_test, feature_selection, knn_classifier)
 
         # Evaluate the model
         accuracy = knn_classifier.score(x_test_pca, y_test)
