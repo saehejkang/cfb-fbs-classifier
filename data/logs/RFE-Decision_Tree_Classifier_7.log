@@ -1,5 +1,5 @@
-Top 5 features: ['Scoring Offense' 'Scoring Defense' 'Turnover Margin'
+Top 5 features: ['Scoring Offense' 'Team Passing Efficiency Defense' 'Turnover Margin'
  '4th Down Conversion Pct' 'Red Zone Defense']
 
-Accuracy: 0.7778
+Accuracy: 0.6667
 

@@ -1,4 +1,5 @@
 from matplotlib.colors import ListedColormap
+from matplotlib.ticker import MultipleLocator
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -35,11 +36,22 @@ def misclassification_count(m: list):
         elif clf == 2:
             bar.set_color('green')
 
-    plt.legend(bars[::2], ['Playoff Team', 'Bowl-eligible', 'Not Bowl-eligible'])
+    #plt.legend(bars[::2], ['Playoff Team', 'Bowl-eligible', 'Not Bowl-eligible'])
+
+    # handles = [plt.Line2D([0], [0], marker='o', color='b', markerfacecolor='k', markersize=10, label='Playoff Team'),
+    #            plt.Line2D([0], [0], marker='^', color='y', markerfacecolor='k', markersize=10, label='Bowl-eligible'),
+    #            plt.Line2D([0], [0], marker='^', color='r', markerfacecolor='k', markersize=10, label='Not Bowl-eligible')]
+    # plt.legend(handles=handles)
+
+    legend_elements = [plt.Rectangle((0, 0), 1, 1, color=color) for color in ['green', 'yellow', 'red']]
+    plt.legend(legend_elements, ['Playoff Team', 'Bowl-eligible', 'Not Bowl-eligible'])
+
     plt.xlabel('Teams')
     plt.ylabel('Number of Misclassifications')
     plt.title('Number of Misclassifications by Team (From Test Set)')
     plt.xticks(rotation=90)
+    plt.gca().yaxis.set_major_locator(MultipleLocator(3))
+    plt.grid(axis='y')
     plt.tight_layout()
     plt.savefig(f"../data/plots/misclassifications_count.png")
     plt.close()
