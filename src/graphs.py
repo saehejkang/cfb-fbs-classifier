@@ -92,20 +92,24 @@ def misclassification_count(m: list) -> None:
     plt.close()
 
 
-def accuracy_comparison(labels, values) -> None:
+def accuracy_comparison(labels, values, classifier = "ALL") -> None:
     """
     This graphs a comparison graph of different kNN runs by comparing accuracy scores
     :param labels: List of labels where each label is a classifier type
     :param values: List of values where each value is an accuracy score for the
     corresponding classifier
+    :param classifier: type of run we are plotting
     :return: None
     """
     plt.bar(labels, values)
+    if classifier != "ALL":
+        plt.xlabel('k')
     plt.ylabel('Accuracy Scores')
-    plt.title('Accuracy Score Comparison')
+    plt.title(f'Accuracy Score Comparison ({classifier})')
     plt.xticks(rotation=90)
+    plt.yticks(np.arange(0, 1.1, 0.1))
     plt.tight_layout()
-    plt.savefig(f"../data/plots/accuracy_comparison.png")
+    plt.savefig(f"../data/plots/accuracy_comparison_{classifier}.png")
     plt.close()
 
 

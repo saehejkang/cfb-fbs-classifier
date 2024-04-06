@@ -64,3 +64,10 @@ if __name__ == '__main__':
     labels = tuple([f"{key}-{inner_key}" for key in ac.keys() for inner_key in ac[key].keys()])
     values = tuple([ac[key][inner_key] for key in ac.keys() for inner_key in ac[key].keys()])
     graphs.accuracy_comparison(labels, values)
+
+    # now, go through each classifier type and create individual accuracy comparison
+    for key in ac.keys():
+        keys = tuple(ac[key].keys())
+        vals = tuple([ac[key][k] for k in ac[key].keys()])
+
+        graphs.accuracy_comparison(keys, vals, str(key))
