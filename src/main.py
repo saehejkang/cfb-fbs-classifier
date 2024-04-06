@@ -19,8 +19,6 @@ if __name__ == '__main__':
     d = ['College', 'Final_Standing']
     # isolate just the teams
     teams = data[d].copy()
-    print(type(teams))
-    print(teams.to_numpy())
 
     # classify k = 3
     for val in classify.knn(x=features, y=labels, k=3):

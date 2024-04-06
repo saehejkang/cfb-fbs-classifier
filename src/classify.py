@@ -1,6 +1,6 @@
 from typing import List
-
 from pandas import DataFrame
+from sklearn.decomposition import PCA
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -101,12 +101,37 @@ def knn(x, y, k) -> None:
         # Split the data into training and testing sets
         x_train, x_test, y_train, y_test = train_test_split(features, y, test_size=0.2, random_state=42)
 
+        # Perform PCA to reduce the data to 2 dimensions
+        pca = PCA(n_components=2)
+        x_train_pca = pca.fit_transform(x_train)
+        x_test_pca = pca.transform(x_test)
+
         # Initialize and train the kNN classifier
         knn_classifier = KNeighborsClassifier(n_neighbors=k)
-        knn_classifier.fit(x_train, y_train)
+        knn_classifier.fit(x_train_pca, y_train)
+
+        # create scatter graph (only need 1 set, so do whenever k=3)
+        if k == 3:
+            graphs.knn_scatter(x_train_pca, x_test_pca, y_train, y_test, feature_selection)
+
+        # # Plotting the training data after PCA
+        # plt.figure(figsize=(8, 6))
+        # plt.scatter(x_train_pca[:, 0], x_train_pca[:, 1], c=y_train, cmap='viridis', edgecolor='k', s=50)
+        # plt.xlabel('Principal Component 1')
+        # plt.ylabel('Principal Component 2')
+        # plt.title('2D Plot of Training Data (After PCA)')
+        #
+        # h = 0.02  # step size in the mesh
+        # x_min, x_max = x_train_pca[:, 0].min() - 1, x_train_pca[:, 0].max() + 1
+        # y_min, y_max = x_train_pca[:, 1].min() - 1, x_train_pca[:, 1].max() + 1
+        # xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+        # Z = knn_classifier.predict(np.c_[xx.ravel(), yy.ravel()])
+        # Z = Z.reshape(xx.shape)
+        # plt.contourf(xx, yy, Z, cmap='viridis', alpha=0.5)
+        # plt.show()
 
         # Evaluate the model
-        accuracy = knn_classifier.score(x_test, y_test)
+        accuracy = knn_classifier.score(x_test_pca, y_test)
 
         # write accuracy to log
         with open(f"../data/logs/{feature_selection}_{k}.log", "a") as f:
@@ -116,7 +141,7 @@ def knn(x, y, k) -> None:
         scores.append((f"{feature_selection}-{k}", round(accuracy, 4)))
 
         # Assuming knn_classifier is your trained kNN classifier
-        y_pred = knn_classifier.predict(x_test)
+        y_pred = knn_classifier.predict(x_test_pca)
 
         yield y_pred == y_test
 

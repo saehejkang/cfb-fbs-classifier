@@ -1,6 +1,25 @@
+from matplotlib.colors import ListedColormap
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+
+
+def knn_scatter(x_train, x_test, y_train, y_test, feature_selection):
+    cmap = ListedColormap(['r', 'y', 'b'])
+
+    # Plotting training and testing data
+    plt.scatter(x_train[:, 0], x_train[:, 1], c=y_train, cmap=cmap ,label='Training Data', edgecolor='k', s=50)
+    plt.scatter(x_test[:, 0], x_test[:, 1], c=y_test, cmap=cmap, label='Testing Data', edgecolor='k', s=50, marker='^')
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.title(f'{feature_selection}')
+    #plt.legend()
+    # Create a legend with black points
+    handles = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='k', markersize=10, label='Training Data'),
+               plt.Line2D([0], [0], marker='^', color='w', markerfacecolor='k', markersize=10, label='Testing Data')]
+    plt.legend(handles=handles)
+    plt.savefig(f"../data/plots/scatter_plot_{feature_selection}.png")
+    plt.close()
 
 def misclassification_count(m: list):
     labels = [item[0] for item in m]
@@ -33,7 +52,6 @@ def accuracy_comparison(labels, values):
     :return: None
     """
     plt.bar(labels, values)
-    plt.xlabel('Labels')
     plt.ylabel('Accuracy Scores')
     plt.title('Accuracy Score Comparison')
     plt.xticks(rotation=90)
