@@ -1,6 +1,6 @@
 import data_cleaner, classify, graphs
 
-accuracy_scores = []
+ac = {}
 misclassifications = {}
 
 if __name__ == '__main__':
@@ -20,44 +20,30 @@ if __name__ == '__main__':
     # isolate just the teams
     teams = data[d].copy()
 
-    # classify k = 3
-    for val in classify.knn(x=features, y=labels, k=3):
-        for index, status in val.items():
-            college = teams['College'][index]
-            if not status:
-                if college in misclassifications.keys():
-                    misclassifications[college] += 1
-                else:
-                    misclassifications[college] = 1
-            # print(f"{teams['College'][index]}: {status}")
-    classify.add_scores(accuracy_scores)
+    for k in [3, 5, 7]:
+        for results in classify.knn(x=features, y=labels, k=k):
+            # get the predictions
+            predictions = results[0]
 
-    # classify k = 5
-    for val in classify.knn(x=features, y=labels, k=5):
-        for index, status in val.items():
-            college = teams['College'][index]
-            if not status:
-                if college in misclassifications.keys():
-                    misclassifications[college] += 1
-                else:
-                    misclassifications[college] = 1
-            # print(f"{teams['College'][index]}: {status}")
-    classify.add_scores(accuracy_scores)
+            # get the accuracy info
+            accuracy_info = results[1]
 
-    # classify k = 7
-    for val in classify.knn(x=features, y=labels, k=7):
-        for index, status in val.items():
-            college = teams['College'][index]
-            if not status:
-                if college in misclassifications.keys():
-                    misclassifications[college] += 1
-                else:
-                    misclassifications[college] = 1
-            # print(f"{teams['College'][index]}: {status}")
-    classify.add_scores(accuracy_scores)
+            # loop through predictions and track misclassifications
+            for index, status in predictions.items():
+                college = teams['College'][index]
+                if not status:
+                    if college in misclassifications.keys():
+                        misclassifications[college] += 1
+                    else:
+                        misclassifications[college] = 1
+
+            # handle accuracy scores
+            if k == 3:
+                ac[accuracy_info[0]] = {}
+            ac[accuracy_info[0]][accuracy_info[1]] = accuracy_info[2]
 
     # sort the misclassification's dict, so it is in descending order
-    sorted_misclassifications = sorted(misclassifications.items(), key=lambda x:x[1])
+    sorted_misclassifications = sorted(misclassifications.items(), key=lambda x: x[1])
     sorted_misclassifications.reverse()
 
     # go through misclassifications data and add true classification
@@ -74,8 +60,7 @@ if __name__ == '__main__':
     # plot misclassifications count
     graphs.misclassification_count(misclf_final)
 
-    # get information of aggregate accuracy scores
-    labels, values = zip(*accuracy_scores)
-
-    # make plot comparing accuracy scores
+    # plot aggregate accuracy scores for all classifiers
+    labels = tuple([f"{key}-{inner_key}" for key in ac.keys() for inner_key in ac[key].keys()])
+    values = tuple([ac[key][inner_key] for key in ac.keys() for inner_key in ac[key].keys()])
     graphs.accuracy_comparison(labels, values)

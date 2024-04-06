@@ -22,7 +22,7 @@ def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf) ->
     cmap = ListedColormap(['r', 'y', 'b'])
 
     # Plotting training and testing data
-    ax.scatter(x_train[:, 0], x_train[:, 1], c=y_train, cmap=cmap ,label='Training Data', edgecolor='k', s=50)
+    ax.scatter(x_train[:, 0], x_train[:, 1], c=y_train, cmap=cmap, label='Training Data', edgecolor='k', s=50)
     ax.scatter(x_test[:, 0], x_test[:, 1], c=y_test, cmap=cmap, label='Testing Data', edgecolor='k', s=50, marker='^')
     ax.set_xlabel('Principal Component 1')
     ax.set_ylabel('Principal Component 2')
@@ -30,7 +30,7 @@ def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf) ->
 
     # Create a legend showing training vs testing data
     handles1 = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='k', markersize=10, label='Training Data'),
-               plt.Line2D([0], [0], marker='^', color='w', markerfacecolor='k', markersize=10, label='Testing Data')]
+                plt.Line2D([0], [0], marker='^', color='w', markerfacecolor='k', markersize=10, label='Testing Data')]
     legend1 = ax.legend(loc='upper right', handles=handles1)
     ax.add_artist(legend1)
 
@@ -41,7 +41,7 @@ def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf) ->
     legend2 = ax.legend(loc='upper left', handles=handles2)
     ax.add_artist(legend2)
 
-    # # create decision boundries
+    # # create decision boundaries
     # h = 0.02  # step size in the mesh
     # x_min, x_max = x_train[:, 0].min() - 1, x_train[:, 0].max() + 1
     # y_min, y_max = x_train[:, 1].min() - 1, x_train[:, 1].max() + 1
@@ -54,6 +54,7 @@ def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf) ->
     plt.tight_layout()
     plt.savefig(f"../data/plots/scatter_plot_{feature_selection}.png")
     plt.close()
+
 
 def misclassification_count(m: list) -> None:
     """
@@ -90,6 +91,7 @@ def misclassification_count(m: list) -> None:
     plt.savefig(f"../data/plots/misclassifications_count.png")
     plt.close()
 
+
 def accuracy_comparison(labels, values) -> None:
     """
     This graphs a comparison graph of different kNN runs by comparing accuracy scores
@@ -105,6 +107,7 @@ def accuracy_comparison(labels, values) -> None:
     plt.tight_layout()
     plt.savefig(f"../data/plots/accuracy_comparison.png")
     plt.close()
+
 
 def confusion(test, pred, feature_selection, k) -> None:
     """

@@ -1,4 +1,5 @@
-from typing import List
+import collections
+from typing import List, Any
 from pandas import DataFrame
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import RFE
@@ -13,7 +14,8 @@ import graphs
 
 scores = []
 
-def user_chosen_features(x, choice) -> DataFrame:
+
+def user_chosen_features(x, choice) -> DataFrame | None:
     """
     This function isolates the features that are user chosen
     :param x: X data
@@ -29,7 +31,8 @@ def user_chosen_features(x, choice) -> DataFrame:
     elif choice == "offense":
         features = ['Total Offense', 'Rushing Offense', 'Passing Offense', 'Team Passing Efficiency', 'Scoring Offense']
     elif choice == "defense":
-        features = ['Total Defense', 'Rushing Defense', 'Passing Yards Allowed', 'Team Passing Efficiency Defense', 'Scoring Defense']
+        features = ['Total Defense', 'Rushing Defense', 'Passing Yards Allowed', 'Team Passing Efficiency Defense',
+                    'Scoring Defense']
 
     if features is not None:
         return x[features].copy()
@@ -78,16 +81,7 @@ def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features
         return x[x.columns[rfe.support_]].copy()
 
 
-def add_scores(lst: List) -> None:
-    """
-    This function adds our scores to lst passed in
-    :param lst: List of scores already accumulated
-    :return: None
-    """
-    for entry in scores:
-        lst.append(entry)
-
-def knn(x, y, k) -> None:
+def knn(x, y, k) -> Any:
     """
     This functions performs kNN on data passed in
     :param x: x data (features only)
@@ -116,7 +110,9 @@ def knn(x, y, k) -> None:
     defense_features = user_chosen_features(x, "defense")
     feature_selection_method_list.append('User_Defined_Defense')
 
-    for features, feature_selection in zip([svc_features, logistic_regression_features, decision_tree_features, tyler_features, offense_features, defense_features], feature_selection_method_list):
+    for features, feature_selection in zip(
+            [svc_features, logistic_regression_features, decision_tree_features, tyler_features, offense_features,
+             defense_features], feature_selection_method_list):
         with open(f"../data/logs/{feature_selection}_{k}.log", "w") as f:
             f.write(f"Top 5 features: {features.columns.to_numpy()}\n\n")
 
@@ -149,6 +145,6 @@ def knn(x, y, k) -> None:
         # Assuming knn_classifier is your trained kNN classifier
         y_pred = knn_classifier.predict(x_test_pca)
 
-        yield y_pred == y_test
+        yield (y_pred == y_test, (feature_selection, k, accuracy))
 
         graphs.confusion(y_test, y_pred, feature_selection, k)
