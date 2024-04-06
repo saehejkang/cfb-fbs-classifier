@@ -14,6 +14,13 @@ import graphs
 scores = []
 
 def user_chosen_features(x, choice) -> DataFrame:
+    """
+    This function isolates the features that are user chosen
+    :param x: X data
+    :param choice: which user chosen option we are using
+    :return: DataFrame representing modified dataset with just the features
+    chosen by user
+    """
     features = None
     if choice == "saehej":
         pass
@@ -26,6 +33,8 @@ def user_chosen_features(x, choice) -> DataFrame:
 
     if features is not None:
         return x[features].copy()
+    else:
+        return None
 
 
 def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features=5) -> DataFrame:
@@ -64,17 +73,28 @@ def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features
         rfe = RFE(estimator=clf, n_features_to_select=num_features)
         rfe.fit(x, y)
 
-    # print(x.columns[rfe.support_])
     # Create a new DataFrame with only the selected features
     if rfe is not None:
         return x[x.columns[rfe.support_]].copy()
 
 
-def add_scores(lst: List):
+def add_scores(lst: List) -> None:
+    """
+    This function adds our scores to lst passed in
+    :param lst: List of scores already accumulated
+    :return: None
+    """
     for entry in scores:
         lst.append(entry)
 
 def knn(x, y, k) -> None:
+    """
+    This functions performs kNN on data passed in
+    :param x: x data (features only)
+    :param y: y data (labels only)
+    :param k: how many neighbors to compare against (3, 5, or 7 in our case)
+    :return: None
+    """
     scores.clear()
     feature_selection_method_list = []
 
