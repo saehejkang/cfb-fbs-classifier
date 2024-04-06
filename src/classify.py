@@ -107,6 +107,8 @@ def knn(x, y, k) -> None:
     feature_selection_method_list.append("RFE-Decision_Tree_Classifier")
 
     # user defined features
+    # saehej_features = user_chosen_features(x, "saehej")
+    # feature_selection_method_list.append("User_Defined_Saehej")
     tyler_features = user_chosen_features(x, "tyler")
     feature_selection_method_list.append("User_Defined_Tyler")
     offense_features = user_chosen_features(x, "offense")
