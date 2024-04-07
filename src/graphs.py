@@ -41,18 +41,21 @@ def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf) ->
     legend2 = ax.legend(loc='upper left', handles=handles2)
     ax.add_artist(legend2)
 
-    # # create decision boundaries
-    # h = 0.02  # step size in the mesh
-    # x_min, x_max = x_train[:, 0].min() - 1, x_train[:, 0].max() + 1
-    # y_min, y_max = x_train[:, 1].min() - 1, x_train[:, 1].max() + 1
-    # xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
-    # Z = knn_clf.predict(np.c_[xx.ravel(), yy.ravel()])
-    # Z = Z.reshape(xx.shape)
-    # plt.contourf(xx, yy, Z, cmap=cmap, alpha=0.5)
-
     # Create a second legend for specific elements (upper right corner)
     plt.tight_layout()
     plt.savefig(f"../data/plots/scatter_plot_{feature_selection}.png")
+
+    # create decision boundaries
+    h = 0.3  # step size in the mesh
+    x_min, x_max = min(x_train[:, 0].min(), x_test[:, 0].min()) - 1, max(x_train[:, 0].max(), x_test[:, 0].max()) + 1
+    y_min, y_max = min(x_train[:, 1].min(), x_test[:, 1].min()) - 1, max(x_train[:, 1].max(), x_test[:, 1].max()) + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+    Z = knn_clf.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, cmap=cmap, alpha=0.5)
+
+    # Create a second legend for specific elements (upper right corner)
+    plt.savefig(f"../data/plots/decision_boundaries_{feature_selection}.png")
     plt.close()
 
 

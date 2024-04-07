@@ -1,5 +1,5 @@
 import collections
-from typing import List, Any
+from typing import List, Any, Optional
 from pandas import DataFrame
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import RFE
@@ -15,7 +15,7 @@ import graphs
 scores = []
 
 
-def user_chosen_features(x, choice) -> DataFrame | None:
+def user_chosen_features(x, choice) -> Optional[DataFrame]:
     """
     This function isolates the features that are user chosen
     :param x: X data
@@ -145,6 +145,6 @@ def knn(x, y, k) -> Any:
         # Assuming knn_classifier is your trained kNN classifier
         y_pred = knn_classifier.predict(x_test_pca)
 
-        yield (y_pred == y_test, (feature_selection, k, accuracy))
+        yield y_pred == y_test, (feature_selection, k, accuracy)
 
         graphs.confusion(y_test, y_pred, feature_selection, k)
