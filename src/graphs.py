@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf) -> None:
+def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf=None) -> None:
     """
     This function makes a scatter plot showing the data we are performing kNN on but averaged
     down to just 2 features (using PCA).
@@ -24,8 +24,8 @@ def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf) ->
     # Plotting training and testing data
     ax.scatter(x_train[:, 0], x_train[:, 1], c=y_train, cmap=cmap, label='Training Data', edgecolor='k', s=50)
     ax.scatter(x_test[:, 0], x_test[:, 1], c=y_test, cmap=cmap, label='Testing Data', edgecolor='k', s=50, marker='^')
-    ax.set_xlabel('Principal Component 1')
-    ax.set_ylabel('Principal Component 2')
+    ax.set_xlabel('PCA Component A')
+    ax.set_ylabel('PCA Component B')
     ax.set_title(f'{feature_selection}')
 
     # Create a legend showing training vs testing data
@@ -45,18 +45,21 @@ def knn_scatter(x_train, x_test, y_train, y_test, feature_selection, knn_clf) ->
     plt.tight_layout()
     plt.savefig(f"../data/plots/scatter_plot_{feature_selection}.png")
 
-    # create decision boundaries
-    h = 0.3  # step size in the mesh
-    x_min, x_max = min(x_train[:, 0].min(), x_test[:, 0].min()) - 1, max(x_train[:, 0].max(), x_test[:, 0].max()) + 1
-    y_min, y_max = min(x_train[:, 1].min(), x_test[:, 1].min()) - 1, max(x_train[:, 1].max(), x_test[:, 1].max()) + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
-    Z = knn_clf.predict(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-    plt.contourf(xx, yy, Z, cmap=cmap, alpha=0.5)
+    if knn_clf is not None:
+        # create decision boundaries
+        h = 0.3  # step size in the mesh
+        x_min, x_max = min(x_train[:, 0].min(), x_test[:, 0].min()) - 1, max(x_train[:, 0].max(), x_test[:, 0].max()) + 1
+        y_min, y_max = min(x_train[:, 1].min(), x_test[:, 1].min()) - 1, max(x_train[:, 1].max(), x_test[:, 1].max()) + 1
+        xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+        Z = knn_clf.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
+        ax.contourf(xx, yy, Z, cmap=cmap, alpha=0.5)
 
-    # Create a second legend for specific elements (upper right corner)
-    plt.savefig(f"../data/plots/decision_boundaries_{feature_selection}.png")
-    plt.close()
+        # Create a second legend for specific elements (upper right corner)
+        plt.savefig(f"../data/plots/decision_boundaries_{feature_selection}.png")
+        plt.close()
+    else:
+        plt.close()
 
 
 def misclassification_count(m: list) -> None:

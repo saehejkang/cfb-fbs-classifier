@@ -145,6 +145,10 @@ def knn(x, y, k) -> Any:
         # Assuming knn_classifier is your trained kNN classifier
         y_pred = knn_classifier.predict(x_test_pca)
 
+        # create scatter graph (only need 1 set, so do whenever k=3)
+        if k == 3:
+            graphs.knn_scatter(x_train_pca, x_test_pca, y_train, y_pred, f"{feature_selection}-predictions")
+
         yield y_pred == y_test, (feature_selection, k, accuracy)
 
         graphs.confusion(y_test, y_pred, feature_selection, k)
