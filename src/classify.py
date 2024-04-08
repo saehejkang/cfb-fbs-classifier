@@ -2,6 +2,7 @@ import collections
 from typing import List, Any, Optional
 from pandas import DataFrame
 from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -28,11 +29,6 @@ def user_chosen_features(x, choice) -> Optional[DataFrame]:
         pass
     elif choice == "tyler":
         features = ['Total Offense', 'Scoring Offense', 'Total Defense', 'Scoring Defense', 'Turnover Margin']
-    elif choice == "offense":
-        features = ['Total Offense', 'Rushing Offense', 'Passing Offense', 'Team Passing Efficiency', 'Scoring Offense']
-    elif choice == "defense":
-        features = ['Total Defense', 'Rushing Defense', 'Passing Yards Allowed', 'Team Passing Efficiency Defense',
-                    'Scoring Defense']
 
     if features is not None:
         return x[features].copy()
@@ -68,9 +64,9 @@ def get_rfe_features(x, y, estimator_type="support_vector_machine", num_features
         # apply recursive feature elimination
         rfe = RFE(estimator=clf, n_features_to_select=num_features)
         rfe.fit_transform(x_scaled, y)
-    elif estimator_type == "decision_tree_classifier":
-        # initialize the Decision Tree Classifier
-        clf = DecisionTreeClassifier()
+    elif estimator_type == "random_forest_classifier":
+        # initialize the Random Forest Classifier
+        clf = RandomForestClassifier(n_estimators=100, random_state=42)
 
         # apply the recursive feature elimination
         rfe = RFE(estimator=clf, n_features_to_select=num_features)
@@ -97,22 +93,17 @@ def knn(x, y, k) -> Any:
     feature_selection_method_list.append("RFE-Support_Vector_Machine")
     logistic_regression_features = get_rfe_features(x, y, estimator_type="logistic_regression", num_features=5)
     feature_selection_method_list.append("RFE-Logistic_Regression")
-    decision_tree_features = get_rfe_features(x, y, estimator_type="decision_tree_classifier", num_features=5)
-    feature_selection_method_list.append("RFE-Decision_Tree_Classifier")
+    decision_tree_features = get_rfe_features(x, y, estimator_type="random_forest_classifier", num_features=5)
+    feature_selection_method_list.append("RFE-Random_Forest")
 
     # user defined features
     # saehej_features = user_chosen_features(x, "saehej")
     # feature_selection_method_list.append("User_Defined_Saehej")
     tyler_features = user_chosen_features(x, "tyler")
     feature_selection_method_list.append("User_Defined_Tyler")
-    offense_features = user_chosen_features(x, "offense")
-    feature_selection_method_list.append('User_Defined_Offense')
-    defense_features = user_chosen_features(x, "defense")
-    feature_selection_method_list.append('User_Defined_Defense')
 
     for features, feature_selection in zip(
-            [svc_features, logistic_regression_features, decision_tree_features, tyler_features, offense_features,
-             defense_features], feature_selection_method_list):
+            [svc_features, logistic_regression_features, decision_tree_features, tyler_features], feature_selection_method_list):
         with open(f"../data/logs/{feature_selection}_{k}.log", "w") as f:
             f.write(f"Top 5 features: {features.columns.to_numpy()}\n\n")
 
