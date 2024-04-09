@@ -24,7 +24,8 @@ def user_chosen_features(x, choice) -> Optional[DataFrame]:
     """
     features = None
     if choice == "saehej":
-        pass
+        features = ['4th Down Conversion Pct', 'Time of Possession', '4th Down Conversion Pct',
+                    'Fewest Penalties Per Game', 'Scoring Defense']
     elif choice == "tyler":
         features = ['Total Offense', 'Scoring Offense', 'Total Defense', 'Scoring Defense', 'Turnover Margin']
 
@@ -95,13 +96,13 @@ def knn(x, y, k) -> Any:
     feature_selection_method_list.append("RFE-Random_Forest")
 
     # user defined features
-    # saehej_features = user_chosen_features(x, "saehej")
-    # feature_selection_method_list.append("User_Defined_Saehej")
+    saehej_features = user_chosen_features(x, "saehej")
+    feature_selection_method_list.append("User_Defined_Saehej")
     tyler_features = user_chosen_features(x, "tyler")
     feature_selection_method_list.append("User_Defined_Tyler")
 
     for features, feature_selection in zip(
-            [svc_features, logistic_regression_features, decision_tree_features, tyler_features], feature_selection_method_list):
+            [svc_features, logistic_regression_features, decision_tree_features, saehej_features, tyler_features], feature_selection_method_list):
         with open(f"../data/logs/{feature_selection}_{k}.log", "w") as f:
             f.write(f"Top 5 features: {features.columns.to_numpy()}\n\n")
 
