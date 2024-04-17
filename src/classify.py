@@ -24,7 +24,7 @@ def user_chosen_features(x, choice) -> Optional[DataFrame]:
     """
     features = None
     if choice == "saehej":
-        features = ['4th Down Conversion Pct', 'Time of Possession', '4th Down Conversion Pct',
+        features = ['4th Down Conversion Pct', 'Time of Possession', '4th Down Conversion Pct Defense',
                     'Fewest Penalties Per Game', 'Scoring Defense']
     elif choice == "tyler":
         features = ['Total Offense', 'Scoring Offense', 'Total Defense', 'Scoring Defense', 'Turnover Margin']
